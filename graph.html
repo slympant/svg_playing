@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta content="utf-8" http-equiv="encoding"> 
+        <title>D3 Test</title>
+        <script type="text/javascript" src="d3/d3.v3.min.js"> </script>
+        <script type="text/javascript" src="force.js" ></script>
+        <script type="text/javascript" src="svgUtilities.js" ></script>
+        
+    </head>
+    <body>
+        <script type="text/javascript">
+            var mouseX, mouseY;
+            window.onmousemove = storeMousePosition;
+            function storeMousePosition(event) {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            }
+            
+            var svg = d3.select("body").append("svg").attr("width", 1500).attr("height", 1500);
+
+                
+            var circleMain = svg.append("circle").attr("r", 10)
+                .attr("id", "circle_main")
+                .attr('transform','translate(200 200)');
+            
+            circleMain.on("click", function () {
+                generateNewNode(circleMain);
+            });
+            
+            svg.on("click", function() {
+                var a;
+            });
+            function generateNewNode(node) {
+                var thisPos = getPositionRelativeToParent(node);  //top left position
+                //thisPos.x += parseFloat(node.attr('r'));
+                //thisPos.y += parseFloat(node.attr('r'));
+                var newYTranslate = 100 + getRandomArbitrary(-10, 10);
+                var newPos = {x: thisPos.x, y: thisPos.y + newYTranslate};
+                
+                var randAngle = Math.random() * 360;
+                svg.append("path")
+                .attr('d', 'M ' + thisPos.x + ',' + thisPos.y + ' ' + newPos.x + ',' + newPos.y)
+                .attr('stroke', 'black')
+                .attr('transform','rotate(' + randAngle + ' ' + thisPos.x + ' ' + thisPos.y + ')');
+               
+                var newNode = svg.append("circle").attr("r", 10)
+                .attr('transform','translate(' + newPos.x + ' ' + newPos.y + ') rotate(' + randAngle + ' ' + 0 + ' ' + -newYTranslate + ')');
+                
+                
+                
+                newNode.on("click", function() {generateNewNode(newNode)});
+            }
+            // Returns a random number between min (inclusive) and max (exclusive)
+            function getRandomArbitrary(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+        </script>
+    </body>
+    
+</html>
